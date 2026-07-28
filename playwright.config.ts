@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
@@ -11,7 +13,10 @@ export default defineConfig({
 
   workers: 1,
 
-  reporter: 'html',
+  reporter: [
+    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['junit', { outputFile: 'test-results/results.xml' }]
+  ],
 
   use: {
     trace: 'on-first-retry',
@@ -21,9 +26,9 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'firefox',
+      name: 'chrome',
       use: {
-        ...devices['Desktop Firefox'],
+        ...devices['Desktop Chrome'],
       },
     },
   ],

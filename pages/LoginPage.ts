@@ -5,6 +5,7 @@ export class LoginPage extends BasePage {
     private usernameInput;
     private passwordInput;
     private loginButton;
+    
 
     constructor(page: Page) {
         super(page);
