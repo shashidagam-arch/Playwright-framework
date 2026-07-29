@@ -28,26 +28,45 @@ pipeline {
         }
     }
 
+    // post {
+    //     always {
+
+    //         junit allowEmptyResults: true,
+    //               testResults: 'test-results/results.xml'
+
+    //         archiveArtifacts artifacts: 'playwright-report/**',
+    //                          allowEmptyArchive: true
+
+    //         archiveArtifacts artifacts: 'test-results/**',
+    //                          allowEmptyArchive: true
+
+    //         publishHTML([
+    //             allowMissing: true,
+    //             alwaysLinkToLastBuild: true,
+    //             keepAll: true,
+    //             reportDir: 'playwright-report',
+    //             reportFiles: 'index.html',
+    //             reportName: 'Playwright HTML Report'
+    //         ])
+    //     }
+    // }
     post {
-        always {
+    always {
 
-            junit allowEmptyResults: true,
-                  testResults: 'test-results/results.xml'
+        junit allowEmptyResults: true,
+              testResults: 'test-results/results.xml'
 
-            archiveArtifacts artifacts: 'playwright-report/**',
-                             allowEmptyArchive: true
+        archiveArtifacts artifacts: 'playwright-report/**',
+                         allowEmptyArchive: true
 
-            archiveArtifacts artifacts: 'test-results/**',
-                             allowEmptyArchive: true
-
-            publishHTML([
-                allowMissing: true,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: 'playwright-report',
-                reportFiles: 'index.html',
-                reportName: 'Playwright HTML Report'
-            ])
-        }
+        publishHTML([
+            allowMissing: true,
+            alwaysLinkToLastBuild: true,
+            keepAll: true,
+            reportDir: 'playwright-report',
+            reportFiles: 'index.html',
+            reportName: 'Playwright HTML Report'
+        ])
     }
+}
 }
