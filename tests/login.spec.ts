@@ -7,7 +7,6 @@ dotenv.config({ path: '.env.qa' });
 
 test('Login Test', async ({ page }) => {
   await page.goto(process.env.BASE_URL!);
-
   const loginPage = new LoginPage(page);
   const homePage = new HomePage(page);
   // await page.pause();
@@ -19,7 +18,13 @@ test('Login Test', async ({ page }) => {
     , 'secret_sauce'
 
   );
-  await homePage.clickOnAddToCartButton();
-
+  await homePage.clickOnAddToCartButton("Sauce Labs Backpack");
+  await homePage.clickOnAddToCartButton("Sauce Labs Bike Light");
+  await homePage.clickOnAddToCartButton("Sauce Labs Bolt T-Shirt");
+  await homePage.clickOnAddToCartButton("Sauce Labs Fleece Jacket");
+  await homePage.clickOnCartICon();
+  await homePage.clickOnRemoveButton();
+  const listOftext = await homePage.getCartItemNamesText();
+  console.log(listOftext);
 });
 
