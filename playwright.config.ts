@@ -1,9 +1,10 @@
 /// <reference types="node" />
+import "./env";
 
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: "./tests",
 
   fullyParallel: false,
 
@@ -14,21 +15,21 @@ export default defineConfig({
   workers: 1,
 
   reporter: [
-    ['html', { outputFolder: 'playwright-report', open: 'never' }],
-    ['junit', { outputFile: 'test-results/results.xml' }]
+    ["html", { outputFolder: "playwright-report", open: "never" }],
+    ["junit", { outputFile: "test-results/results.xml" }],
   ],
 
   use: {
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    trace: "on-first-retry",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
   },
 
   projects: [
     {
-      name: 'chrome',
+      name: "chrome",
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices["Desktop Chrome"],
       },
     },
   ],

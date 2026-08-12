@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     stages {
-
         stage('Checkout') {
             steps {
                 checkout scm
@@ -51,15 +50,14 @@ pipeline {
     //     }
     // }
     post {
-    always {
-
-        junit allowEmptyResults: true,
+        always {
+            junit allowEmptyResults: true,
               testResults: 'test-results/results.xml'
 
-        archiveArtifacts artifacts: 'playwright-report/**',
+            archiveArtifacts artifacts: 'playwright-report/**',
                          allowEmptyArchive: true
 
-        publishHTML([
+            publishHTML([
             allowMissing: true,
             alwaysLinkToLastBuild: true,
             keepAll: true,
@@ -67,6 +65,6 @@ pipeline {
             reportFiles: 'index.html',
             reportName: 'Playwright HTML Report'
         ])
+        }
     }
-}
 }
