@@ -3,7 +3,7 @@ import { IElementDefinition } from "./IElementDefinition";
 export const LoginPageElements: Record<string, IElementDefinition> = {
   usernameInput: {
     name: "usernameInput",
-    locator: "#user-name",
+    locator: "#user-name-broken",
     tag: "input",
     placeholder: "Username",
   },
