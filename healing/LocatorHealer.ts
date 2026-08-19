@@ -1,100 +1,95 @@
 import { Locator, Page } from "@playwright/test";
 import { IElementDefinition } from "../elements/IElementDefinition";
+import { LocatorRepository } from "./LocatorRepository";
+
+interface Candidate {
+  tag?: string;
+  id?: string;
+  text?: string;
+  placeholder?: string;
+}
 
 export class LocatorHealer {
+  constructor(private page: Page) {}
 
-    constructor(
-        private page: Page
-    ) {}
+  async heal(element: IElementDefinition): Promise<Locator> {
+    console.log(`[HEALING] Attempting to heal ${element.name}`);
 
-    async heal(
-        element: IElementDefinition
-    ): Promise<Locator> {
+    const knownLocator = LocatorRepository.getLocator(element.locator);
 
-        console.log(
-            `[HEALING] Attempting to heal ${element.name}`
-        );
+    if (knownLocator) {
+      console.log(`[LEARNING] Reusing known locator: ${knownLocator}`);
 
-        const candidates =
-            await this.extractCandidates();
-
-        const match =
-            this.findBestMatch(
-                element,
-                candidates
-            );
-
-        if (!match) {
-            throw new Error(
-                `Unable to heal locator: ${element.name}`
-            );
-        }
-
-        console.log(
-            `[HEALING] Healed using id=${match.id}`
-        );
-
-        return this.page.locator(
-            `#${match.id}`
-        );
+      return this.page.locator(knownLocator);
     }
 
-    private async extractCandidates() {
+    const candidates = await this.extractCandidates();
 
-        return await this.page
-            .locator("*")
-            .evaluateAll(nodes =>
-                nodes.map((node: any) => ({
-                    tag: node.tagName?.toLowerCase(),
-                    id: node.id,
-                    text: node.innerText,
-                    placeholder: node.placeholder
-                }))
-            );
+    const match = this.findBestMatch(element, candidates);
+
+    if (!match || !match.id) {
+      throw new Error(`Unable to heal locator: ${element.name}`);
     }
 
-    private findBestMatch(
-        original: IElementDefinition,
-        candidates: any[]
-    ) {
+    const healedLocator = `#${match.id}`;
 
-        let bestCandidate: any = null;
-        let highestScore = 0;
+    console.log(`[HEALING] Healed using ${healedLocator}`);
 
-        for (const candidate of candidates) {
+    LocatorRepository.saveLocator(element.locator, healedLocator);
 
-            let score = 0;
+    console.log(
+      `[LEARNING] Saved locator mapping: ${element.locator} -> ${healedLocator}`,
+    );
 
-            if (
-                original.tag &&
-                candidate.tag === original.tag
-            ) {
-                score += 40;
-            }
+    return this.page.locator(healedLocator);
+  }
 
-            if (
-                original.text &&
-                candidate.text &&
-                candidate.text.includes(original.text)
-            ) {
-                score += 40;
-            }
+  private async extractCandidates(): Promise<Candidate[]> {
+    return await this.page.locator("*").evaluateAll((nodes) =>
+      nodes.map((node: any) => ({
+        tag: node.tagName?.toLowerCase(),
+        id: node.id,
+        text: node.innerText,
+        placeholder: node.placeholder,
+      })),
+    );
+  }
 
-            if (
-                original.placeholder &&
-                candidate.placeholder === original.placeholder
-            ) {
-                score += 20;
-            }
+  private findBestMatch(
+    original: IElementDefinition,
+    candidates: Candidate[],
+  ): Candidate | null {
+    let bestCandidate: Candidate | null = null;
+    let highestScore = 0;
 
-            if (score > highestScore) {
-                highestScore = score;
-                bestCandidate = candidate;
-            }
-        }
+    for (const candidate of candidates) {
+      let score = 0;
 
-        return highestScore >= 50
-            ? bestCandidate
-            : null;
+      if (original.tag && candidate.tag === original.tag) {
+        score += 40;
+      }
+
+      if (
+        original.text &&
+        candidate.text &&
+        candidate.text.includes(original.text)
+      ) {
+        score += 40;
+      }
+
+      if (
+        original.placeholder &&
+        candidate.placeholder === original.placeholder
+      ) {
+        score += 20;
+      }
+
+      if (score > highestScore) {
+        highestScore = score;
+        bestCandidate = candidate;
+      }
     }
+
+    return highestScore >= 50 ? bestCandidate : null;
+  }
 }
