@@ -1,14 +1,4 @@
-import { UserStory } from "./Models/UserStory";
 
-export class PageGenerator {
-
-    static generate(
-        story: UserStory
-    ): string {
-
-        if (story.pageName === "Login") {
-
-            return `
 import { Page } from "@playwright/test";
 import { LoginPageElements } from "../elements/LoginPageElements";
 import { BasePage } from "../pages/BasePage";
@@ -37,11 +27,5 @@ export class LoginPage extends BasePage {
         await this.click(
             LoginPageElements.loginButton
         );
-    }
-}
-`;
-        }
-
-        return "";
     }
 }

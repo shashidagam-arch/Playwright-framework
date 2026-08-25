@@ -2,68 +2,81 @@ import { UserStory } from "./Models/UserStory";
 
 export class StoryParser {
   static parse(story: string): UserStory {
-    const lines = story
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0);
+    console.log("========== STORY INPUT ==========");
+    console.log(story);
+    console.log("=================================");
 
-    const actor =
-      lines.find((line) => line.startsWith("As "))?.replace("As ", "") || "";
+    const normalizedStory = story
+      .replace(/\r/g, " ")
+      .replace(/\n/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
 
-    const goal =
-      lines.find((line) => line.startsWith("I want"))?.replace("I want ", "") ||
-      "";
+    console.log("NORMALIZED:");
+    console.log(normalizedStory);
 
-    const benefit =
-      lines
-        .find((line) => line.startsWith("So that"))
-        ?.replace("So that ", "") || "";
+    const actorMatch = normalizedStory.match(/^As\s+(.*?)\s+I want/i);
 
-    return {
+    const goalMatch = normalizedStory.match(/I want\s+(.*?)\s+So that/i);
+
+    const benefitMatch = normalizedStory.match(/So that\s+(.*)$/i);
+
+    const actor = actorMatch?.[1]?.trim() || "";
+
+    const goal = goalMatch?.[1]?.trim() || "";
+
+    const benefit = benefitMatch?.[1]?.trim() || "";
+
+    const userStory: UserStory = {
       actor,
-
       goal,
-
       benefit,
-
       pageName: this.derivePageName(goal),
-
       actionName: this.deriveActionName(goal),
-
       validations: this.deriveValidations(benefit),
     };
+
+    console.log("========== PARSED STORY ==========");
+    console.log(userStory);
+    console.log("==================================");
+
+    return userStory;
   }
 
   private static derivePageName(goal: string): string {
-    const lowerGoal = goal.toLowerCase();
+    const text = goal.toLowerCase();
 
-    if (lowerGoal.includes("login")) {
+    if (text.includes("login")) {
       return "Login";
     }
 
-    if (lowerGoal.includes("inventory")) {
+    if (text.includes("inventory")) {
       return "Inventory";
     }
 
-    if (lowerGoal.includes("cart")) {
+    if (text.includes("cart")) {
       return "Cart";
+    }
+
+    if (text.includes("checkout")) {
+      return "Checkout";
     }
 
     return "Generated";
   }
 
   private static deriveActionName(goal: string): string {
-    const lowerGoal = goal.toLowerCase();
+    const text = goal.toLowerCase();
 
-    if (lowerGoal.includes("login")) {
+    if (text.includes("login")) {
       return "login";
     }
 
-    if (lowerGoal.includes("add")) {
-      return "addItem";
+    if (text.includes("add")) {
+      return "addToCart";
     }
 
-    if (lowerGoal.includes("checkout")) {
+    if (text.includes("checkout")) {
       return "checkout";
     }
 
