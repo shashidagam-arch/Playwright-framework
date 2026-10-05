@@ -29,7 +29,7 @@ export class StoryParser {
 
     const userStory: UserStory = {
       actor,
-      goal,
+      goal, 
       benefit,
       pageName: this.derivePageName(goal),
       actionName: this.deriveActionName(goal),

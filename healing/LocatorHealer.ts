@@ -10,7 +10,7 @@ interface Candidate {
 }
 
 export class LocatorHealer {
-  constructor(private page: Page) {}
+  constructor(private page: Page) {{}}
 
   async heal(element: IElementDefinition): Promise<Locator> {
     console.log(`[HEALING] Attempting to heal ${element.name}`);

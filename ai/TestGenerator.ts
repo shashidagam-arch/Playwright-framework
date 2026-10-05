@@ -4,6 +4,7 @@ import path from "path";
 import { StoryParser } from "./StoryParser";
 import { ElementGenerator } from "./ElementGenerator";
 import { PageGenerator } from "./PageGenerator";
+import { StoryMappings } from "./StoryMappings";
 
 export class TestGenerator {
   static generate(story: string, fileName: string): void {
@@ -11,21 +12,27 @@ export class TestGenerator {
 
     console.log("UserStory......", userStory);
 
+    const mapping =
+      StoryMappings[userStory.pageName as keyof typeof StoryMappings];
+
+    if (!mapping) {
+      throw new Error(`No mapping found for ${userStory.pageName}`);
+    }
+
     const elementsContent = ElementGenerator.generate(userStory);
 
     const pageContent = PageGenerator.generate(userStory);
-
     const testContent = `
 import { test } from "@playwright/test";
 import { ${userStory.pageName}Page } from "../pages/${userStory.pageName}Page";
+${mapping.testImports ?? ""}
 
 test("${userStory.goal}", async ({ page }) => {
 
     const generatedPage =
         new ${userStory.pageName}Page(page);
 
-    // TODO:
-    // Generated from user story
+${mapping.testSteps}
 
 });
 `;
