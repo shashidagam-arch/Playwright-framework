@@ -1,4 +1,4 @@
-import { BasePage } from "./BasePage";
+import { BasePage } from "../pages/BasePage";
 import { Page } from "@playwright/test";
 
 export class HomePage extends BasePage {
