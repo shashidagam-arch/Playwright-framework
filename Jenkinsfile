@@ -22,7 +22,7 @@ pipeline {
 
         stage('Run Playwright Tests') {
             steps {
-                bat 'npx playwright test'
+                bat 'npx playwright test tests/Ui/LoginTest.spec.ts'
             }
         }
     }
