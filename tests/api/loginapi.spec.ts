@@ -3,7 +3,7 @@ import { LoginApi } from "../../api/Client/LoginApi";
 
 test("verify Login API", async () => {
   const loginApi = new LoginApi();
-  
+
   console.log("BASE_URL =", process.env.BASE_URL);
   console.log("API_URL =", process.env.API_URL);
 
@@ -17,6 +17,8 @@ test("verify Login API", async () => {
   console.log("Status:", response.status());
   console.log("Response:", body);
 
-  expect(response.status()).toBe(200);
-  expect(body.token).toBeTruthy();
+  expect(response.status()).toBe(201);
+  expect(body.username).toBeTruthy();
+  expect(body.password).toBeTruthy();
+  expect(body.id).toBeTruthy();
 });

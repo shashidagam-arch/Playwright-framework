@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "generate-nlp": "tsx ai/NLPRunner.ts",
+    "generate": "playwright test tests/generator/storyGenerator.spec.ts",
+    "run-generated": "playwright test generated/tests",
+    "generate-and-run": "playwright test tests/generator/storyGenerator.spec.ts && playwright test generated/tests"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -13,7 +18,9 @@
     "@types/mssql": "^12.3.0",
     "@types/node": "^26.2.0",
     "allure-commandline": "^2.43.0",
-    "allure-playwright": "^3.10.2"
+    "allure-playwright": "^3.10.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.23.13"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
